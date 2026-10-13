@@ -4,7 +4,7 @@
 
 ## Checklist
 
-- [ ] `Invoke-Pester ./tests` passes
+- [ ] `./tests/Invoke-Tests.ps1` passes
 - [ ] `Invoke-ScriptAnalyzer -Path ./src -Recurse -Settings ./PSScriptAnalyzerSettings.psd1` is clean
 - [ ] Works on Windows PowerShell 5.1 and PowerShell 7
 - [ ] CHANGELOG.md updated under `[Unreleased]`

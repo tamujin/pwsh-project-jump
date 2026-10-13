@@ -33,17 +33,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Run Pester
-        shell: ${{ matrix.shell }}
+        # 'shell:' can't use the matrix context, so start the matrix's PowerShell explicitly
+        shell: pwsh
         run: |
-          Install-Module Pester -MinimumVersion 5.5.0 -Scope CurrentUser -Force -SkipPublisherCheck
-          Import-Module Pester -MinimumVersion 5.5.0
-          $config = New-PesterConfiguration
-          $config.Run.Path = './tests'
-          $config.Run.Exit = $true
-          $config.Output.Verbosity = 'Detailed'
-          $config.TestResult.Enabled = $true
-          $config.TestResult.OutputPath = "testResults-${{ matrix.shell }}.xml"
-          Invoke-Pester -Configuration $config
+          & ${{ matrix.shell }} -NoProfile -ExecutionPolicy Bypass -File ./tests/Invoke-Tests.ps1 -OutputPath testResults-${{ matrix.shell }}.xml
+          exit $LASTEXITCODE
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4

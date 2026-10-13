@@ -25,7 +25,8 @@ Import-Module ./src/ProjectJump/ProjectJump.psd1 -Force
 
 ```powershell
 Invoke-ScriptAnalyzer -Path ./src -Recurse -Settings ./PSScriptAnalyzerSettings.psd1
-Invoke-Pester ./tests
+./tests/Invoke-Tests.ps1                                    # PowerShell 7
+powershell -NoProfile -File ./tests/Invoke-Tests.ps1        # Windows PowerShell 5.1
 ```
 
 CI runs both checks on Windows PowerShell 5.1 and PowerShell 7.

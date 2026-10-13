@@ -12,7 +12,7 @@
 RootModule = 'ProjectJump.psm1'
 
 # Version number of this module.
-ModuleVersion = '0.1.0'
+ModuleVersion = '0.2.0'
 
 # Supported PSEditions
 CompatiblePSEditions = 'Desktop', 'Core'
@@ -30,7 +30,7 @@ CompanyName = 'Community'
 Copyright = '(c) 2026 tamujin. MIT License.'
 
 # Description of the functionality provided by this module
-Description = 'Ctrl+K type-ahead picker for your project folders in PowerShell. Enter jumps to the folder, Shift+Enter opens it in a new Windows Terminal tab.'
+Description = 'Ctrl+K type-ahead picker for your project folders in PowerShell. Lists your most used projects first, scans folders for git repos, and opens the pick in the current tab, a new Windows Terminal tab or pane, your editor, or Explorer.'
 
 # Minimum version of the PowerShell engine required by this module
 PowerShellVersion = '5.1'
@@ -70,7 +70,8 @@ PowerShellVersion = '5.1'
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = 'Add-ProjectFolder', 'Remove-ProjectFolder', 'Get-ProjectFolder', 
-               'Invoke-ProjectJump', 'Set-ProjectJumpKeyHandler'
+               'Invoke-ProjectJump', 'Set-ProjectJumpKeyHandler', 'Add-ProjectRoot', 
+               'Remove-ProjectRoot', 'Get-ProjectRoot', 'Update-ProjectIndex'
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
@@ -96,8 +97,7 @@ PrivateData = @{
     PSData = @{
 
         # Tags applied to this module. These help with module discovery in online galleries.
-        Tags = 'Windows', 'Terminal', 'WindowsTerminal', 'PSReadLine', 'Navigation', 
-               'Productivity', 'FuzzyFinder', 'cd'
+        Tags = 'Windows','Terminal','WindowsTerminal','PSReadLine','Navigation','Productivity','FuzzyFinder','cd'
 
         # A URL to the license for this module.
         LicenseUri = 'https://github.com/tamujin/pwsh-project-jump/blob/main/LICENSE'
@@ -122,7 +122,7 @@ PrivateData = @{
 
     } # End of PSData hashtable
 
-} # End of PrivateData hashtable
+ } # End of PrivateData hashtable
 
 # HelpInfo URI of this module
 # HelpInfoURI = ''

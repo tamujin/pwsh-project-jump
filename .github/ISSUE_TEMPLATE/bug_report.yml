@@ -1,0 +1,44 @@
+name: Bug report
+description: Something doesn't work as expected
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. pja in D:\src\my-project
+        2. Press Ctrl+K
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: psversion
+    attributes:
+      label: PowerShell version
+      description: Output of `$PSVersionTable.PSVersion`
+    validations:
+      required: true
+  - type: dropdown
+    id: terminal
+    attributes:
+      label: Terminal
+      options:
+        - Windows Terminal
+        - Windows console host (conhost)
+        - VS Code integrated terminal
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: ProjectJump version
+      description: Output of `(Get-Module ProjectJump).Version`

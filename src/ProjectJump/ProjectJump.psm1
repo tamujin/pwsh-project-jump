@@ -296,6 +296,27 @@ function Update-ProjectIndex {
 
 #endregion
 
+#region Console encoding
+
+# [Console]::Write and PSReadLine's InvokePrompt() encode through [Console]::OutputEncoding, which is often
+# a legacy code page such as 437. Nerd Font glyphs (oh-my-posh, Terminal-Icons) then print as '?'.
+# Switch to UTF-8 while drawing and restore the previous encoding afterwards.
+function Enter-Utf8Output {
+    $previous = [Console]::OutputEncoding
+    if ($previous.CodePage -ne 65001) {
+        try { [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false) } catch { Write-Verbose "ProjectJump: cannot switch to UTF-8: $_" }
+    }
+    $previous
+}
+
+function Exit-Utf8Output($Previous) {
+    if ($Previous -and [Console]::OutputEncoding.CodePage -ne $Previous.CodePage) {
+        try { [Console]::OutputEncoding = $Previous } catch { Write-Verbose "ProjectJump: cannot restore output encoding: $_" }
+    }
+}
+
+#endregion
+
 #region Picker
 
 function Get-ProjectItemList([string[]]$Saved, [string[]]$Scanned) {
@@ -383,6 +404,7 @@ function Show-ProjectPicker {
     }
 
     # Draw on the alternate screen so the main buffer (and PSReadLine's view of it) stays untouched.
+    $encoding = Enter-Utf8Output
     [Console]::Write("$e[?1049h")
     try {
         while ($true) {
@@ -450,6 +472,7 @@ function Show-ProjectPicker {
     }
     finally {
         [Console]::Write("$e[?1049l")
+        Exit-Utf8Output $encoding
     }
 }
 
@@ -540,7 +563,10 @@ function Set-ProjectJumpKeyHandler {
         if (Invoke-ProjectAction $r) { return }
         Set-Location -LiteralPath $r.Path
         Add-ProjectUsage $r.Path
-        [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt()
+        # InvokePrompt renders through [Console]::OutputEncoding; without UTF-8, prompt glyphs turn into '?'
+        $encoding = Enter-Utf8Output
+        try { [Microsoft.PowerShell.PSConsoleReadLine]::InvokePrompt() }
+        finally { Exit-Utf8Output $encoding }
     }
 }
 

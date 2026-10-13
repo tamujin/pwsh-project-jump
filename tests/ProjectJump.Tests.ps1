@@ -228,6 +228,22 @@ Describe 'Project roots' {
     }
 }
 
+Describe 'Console encoding' {
+    It 'switches to UTF-8 and restores the previous encoding' {
+        InModuleScope ProjectJump {
+            $original = [Console]::OutputEncoding
+            try {
+                try { [Console]::OutputEncoding = [Text.Encoding]::GetEncoding(437) } catch { Set-ItResult -Skipped -Because 'console encoding cannot be changed in this host'; return }
+                $previous = Enter-Utf8Output
+                [Console]::OutputEncoding.CodePage | Should -Be 65001
+                Exit-Utf8Output $previous
+                [Console]::OutputEncoding.CodePage | Should -Be 437
+            }
+            finally { [Console]::OutputEncoding = $original }
+        }
+    }
+}
+
 Describe 'Format-PickerRow' {
     It 'never exceeds the given width (ignoring ANSI codes)' {
         $row = InModuleScope ProjectJump {

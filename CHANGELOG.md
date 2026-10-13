@@ -5,6 +5,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-10-13
+
+### Fixed
+- Prompt icons (oh-my-posh, Nerd Fonts) showed as `?` after jumping to a folder when the console used a legacy code page such as 437. The picker and prompt redraw now write UTF-8 and restore the previous encoding afterwards.
+
 ## [0.2.0] - 2026-10-13
 
 ### Added
@@ -30,6 +35,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - `PROJECTJUMP_HOME` to change where the folder list is stored.
 - Support for Windows PowerShell 5.1 and PowerShell 7+.
 
-[Unreleased]: https://github.com/tamujin/pwsh-project-jump/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/tamujin/pwsh-project-jump/compare/v0.2.1...HEAD
+[0.2.1]: https://github.com/tamujin/pwsh-project-jump/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/tamujin/pwsh-project-jump/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/tamujin/pwsh-project-jump/releases/tag/v0.1.0

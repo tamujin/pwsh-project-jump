@@ -5,6 +5,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-10-14
+
+### Added
+- Task runner on Ctrl+T. It lists what you can run in the current project: make targets, Aspire (`run`/`start`/`stop`/`ps`), dotnet build/test/run, npm/yarn/pnpm scripts, PowerShell scripts, docker compose, maven and gradle. Enter runs the task at the prompt (so it is in your history), Shift+Enter in a new tab, Ctrl+S in a split pane.
+- `Get-ProjectTask`, `Add-ProjectTask`, `Remove-ProjectTask`, `Invoke-ProjectTask` (`pjt`) and `Set-ProjectTaskKeyHandler`. Save your own commands per project with `Add-ProjectTask`; `pjt <name>` runs the best match without the picker.
+- Browse into a folder from the picker with Right, go back with Left. The folder itself is the first entry. Folders you use most while browsing are listed first.
+- Folders you open at least three times from the browser show up in the list even if you never saved them (`Source` = `visited` in `Get-ProjectFolder -All`).
+
+### Security
+- File names, make targets and package.json script names are quoted before they become part of a command, so a repository cannot inject extra commands through them. Tasks opened in a new tab or pane are passed encoded.
+
 ## [0.2.1] - 2026-10-13
 
 ### Fixed
@@ -35,7 +46,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - `PROJECTJUMP_HOME` to change where the folder list is stored.
 - Support for Windows PowerShell 5.1 and PowerShell 7+.
 
-[Unreleased]: https://github.com/tamujin/pwsh-project-jump/compare/v0.2.1...HEAD
+[Unreleased]: https://github.com/tamujin/pwsh-project-jump/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/tamujin/pwsh-project-jump/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/tamujin/pwsh-project-jump/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/tamujin/pwsh-project-jump/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/tamujin/pwsh-project-jump/releases/tag/v0.1.0

@@ -38,6 +38,15 @@ Guidelines:
 - Add an entry under `## [Unreleased]` in [CHANGELOG.md](CHANGELOG.md).
 - Use clear commit messages. One logical change per PR is preferred.
 
+## Releasing (maintainers)
+
+1. Bump `ModuleVersion` in `src/ProjectJump/ProjectJump.psd1` and move the `[Unreleased]` notes in `CHANGELOG.md` under the new version.
+2. Merge to `main` once CI is green.
+3. Tag and push: `git tag -a vX.Y.Z -m "vX.Y.Z"; git push origin vX.Y.Z`.
+4. The *Publish to PowerShell Gallery* workflow checks that the tag matches the manifest, runs the tests and publishes. It needs the `PSGALLERY_API_KEY` secret, and can wait for approval in the `powershell-gallery` environment.
+
+A version published to the Gallery can only be unlisted, never replaced, so double-check the version before tagging.
+
 ## Code of Conduct
 
 This project follows the [Code of Conduct](CODE_OF_CONDUCT.md).

@@ -1,0 +1,46 @@
+name: Publish to PowerShell Gallery
+
+# Runs when a version tag (v*) is pushed, or manually from the Actions tab.
+# The 'powershell-gallery' environment can require your approval before the job starts:
+# GitHub > Settings > Environments > powershell-gallery > Required reviewers.
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: windows-latest
+    environment: powershell-gallery
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check the version
+        shell: pwsh
+        run: |
+          $version = (Import-PowerShellDataFile ./src/ProjectJump/ProjectJump.psd1).ModuleVersion
+          Write-Host "Module version: $version"
+          if ($env:GITHUB_REF_TYPE -eq 'tag' -and $env:GITHUB_REF_NAME -ne "v$version") {
+            throw "Tag $env:GITHUB_REF_NAME does not match the module version v$version."
+          }
+          if (-not (Select-String -Path ./CHANGELOG.md -Pattern "^## \[$([regex]::Escape($version))\]" -Quiet)) {
+            throw "CHANGELOG.md has no entry for $version."
+          }
+
+      - name: Run the tests
+        shell: pwsh
+        run: ./tests/Invoke-Tests.ps1
+
+      - name: Publish
+        shell: pwsh
+        env:
+          NUGET_API_KEY: ${{ secrets.PSGALLERY_API_KEY }}
+        run: |
+          if (-not $env:NUGET_API_KEY) {
+            throw 'The PSGALLERY_API_KEY secret is missing. Add it under Settings > Secrets and variables > Actions.'
+          }
+          Publish-Module -Path ./src/ProjectJump -NuGetApiKey $env:NUGET_API_KEY -Verbose

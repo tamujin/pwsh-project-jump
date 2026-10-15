@@ -33,7 +33,7 @@ CI runs both checks on Windows PowerShell 5.1 and PowerShell 7.
 
 Guidelines:
 - Keep the module dependency-free and compatible with **PowerShell 5.1**. That rules out `??`, ternaries, `-Parallel` and .NET Core-only APIs.
-- Keep source files ASCII, or UTF-8 with BOM. Windows PowerShell 5.1 misreads UTF-8 without a BOM.
+- Keep source files ASCII, or UTF-8 with BOM. Windows PowerShell 5.1 misreads UTF-8 without a BOM. The exception is `install.ps1`, which must stay ASCII with no BOM, because `irm | iex` can't parse a script that starts with one.
 - Add or update Pester tests for behavior changes.
 - Add an entry under `## [Unreleased]` in [CHANGELOG.md](CHANGELOG.md).
 - Use clear commit messages. One logical change per PR is preferred.

@@ -14,7 +14,7 @@ jobs:
     name: PSScriptAnalyzer
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Run PSScriptAnalyzer
         shell: pwsh
         run: |
@@ -31,7 +31,7 @@ jobs:
       matrix:
         shell: [pwsh, powershell]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Run Pester
         # 'shell:' can't use the matrix context, so start the matrix's PowerShell explicitly
         shell: pwsh

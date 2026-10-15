@@ -31,6 +31,57 @@ Projects  3/42   Enter: cd | Shift+Enter: tab | Ctrl+S: split | Ctrl+O: editor |
 
 ## Install
 
+Pick one. Each installs for the current user only and needs no admin rights.
+
+| Method | Command | Updates with | Adds the profile line |
+|---|---|---|---|
+| [One-line script](#one-line-script) | `irm https://raw.githubusercontent.com/tamujin/pwsh-project-jump/main/install.ps1 \| iex` | running it again | Yes |
+| [Scoop](#scoop) | `scoop install projectjump` (after adding the bucket) | `scoop update projectjump` | No |
+| [Release zip](#release-zip) | download and extract | by hand | No |
+| [From source](#from-source) | `git clone` then `./install.ps1` | `git pull` then `./install.ps1` | Yes |
+
+Then load it in every session by adding this line to your PowerShell profile, if the method didn't add it already:
+
+```powershell
+Add-Content $PROFILE 'Import-Module ProjectJump'
+```
+
+Open a new terminal tab, run `pja` in a project folder (or `Add-ProjectRoot D:\source\repos`), and press **Ctrl+K**.
+
+PowerShell 7 and Windows PowerShell 5.1 keep separate module folders and profiles. If you use both, install from each, except with Scoop, which serves both.
+
+### One-line script
+
+```powershell
+irm https://raw.githubusercontent.com/tamujin/pwsh-project-jump/main/install.ps1 | iex
+```
+
+This downloads `ProjectJump.zip` from the latest GitHub release, installs it into your user module folder, and adds `Import-Module ProjectJump` to your profile. To pick a version or leave your profile alone, run it as a script block:
+
+```powershell
+& ([scriptblock]::Create((irm https://raw.githubusercontent.com/tamujin/pwsh-project-jump/main/install.ps1))) -Version 0.3.0 -NoProfile
+```
+
+As with any script from the web, you can read [install.ps1](install.ps1) first.
+
+### Scoop
+
+```powershell
+scoop bucket add projectjump https://github.com/tamujin/pwsh-project-jump
+scoop install projectjump
+```
+
+Scoop puts the module in `~\scoop\modules`, which it adds to your module path for both PowerShell editions.
+
+### Release zip
+
+Download `ProjectJump.zip` from the [latest release](https://github.com/tamujin/pwsh-project-jump/releases/latest). Each release also has a `ProjectJump.zip.sha256` file with its checksum. Extract the zip into a folder named `ProjectJump` in one of your module folders:
+
+- PowerShell 7: `Documents\PowerShell\Modules\ProjectJump`
+- Windows PowerShell 5.1: `Documents\WindowsPowerShell\Modules\ProjectJump`
+
+If Windows blocks the files because they came from the internet, run `Get-ChildItem <folder> | Unblock-File`.
+
 ### From source
 
 ```powershell
@@ -39,15 +90,11 @@ cd pwsh-project-jump
 ./install.ps1
 ```
 
-`install.ps1` copies the module into your user module path and adds `Import-Module ProjectJump` to your PowerShell profile. Use `-NoProfile` to skip the profile change. It installs for whichever PowerShell runs it, so run it once from `pwsh` and once from `powershell` if you use both.
+`install.ps1` copies the module into your user module folder and adds `Import-Module ProjectJump` to your profile. Use `-NoProfile` to skip the profile change. To load a working copy without installing, use `Import-Module <path-to-repo>\src\ProjectJump\ProjectJump.psd1`.
 
-### Manually
+### Uninstall
 
-```powershell
-Import-Module <path-to-repo>\src\ProjectJump\ProjectJump.psd1
-```
-
-Add that line to your `$PROFILE` to load the module in every session.
+Remove the `Import-Module ProjectJump` line from your profile, then use the counterpart of how you installed it: `scoop uninstall projectjump`, or delete the `ProjectJump` folder from your module folder. Your saved folders stay in `~/.projectjump` until you delete it.
 
 ## Usage
 

@@ -1,0 +1,23 @@
+{
+  "version": "0.3.0",
+  "description": "Ctrl+K project folder picker and Ctrl+T task runner for PowerShell.",
+  "homepage": "https://github.com/tamujin/pwsh-project-jump",
+  "license": "MIT",
+  "url": "https://github.com/tamujin/pwsh-project-jump/releases/download/v0.3.0/ProjectJump.zip",
+  "hash": "47b0e4646ce4d6ef0fff72575cba70bb7d67fc8b152350b739f80621387404cc",
+  "psmodule": {
+    "name": "ProjectJump"
+  },
+  "notes": [
+    "Add this line to your PowerShell profile to load ProjectJump in every session:",
+    "    Import-Module ProjectJump",
+    "For example: Add-Content $PROFILE 'Import-Module ProjectJump'"
+  ],
+  "checkver": "github",
+  "autoupdate": {
+    "url": "https://github.com/tamujin/pwsh-project-jump/releases/download/v$version/ProjectJump.zip",
+    "hash": {
+      "url": "$url.sha256"
+    }
+  }
+}

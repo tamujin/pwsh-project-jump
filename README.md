@@ -1,7 +1,6 @@
 # pwsh-project-jump
 
 [![CI](https://github.com/tamujin/pwsh-project-jump/actions/workflows/ci.yml/badge.svg)](https://github.com/tamujin/pwsh-project-jump/actions/workflows/ci.yml)
-[![PowerShell Gallery](https://img.shields.io/powershellgallery/v/ProjectJump?label=PowerShell%20Gallery)](https://www.powershellgallery.com/packages/ProjectJump)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 ![PowerShell 5.1 | 7+](https://img.shields.io/badge/PowerShell-5.1%20%7C%207%2B-5391FE)
 
@@ -36,7 +35,6 @@ Pick one. Each installs for the current user only and needs no admin rights.
 
 | Method | Command | Updates with | Adds the profile line |
 |---|---|---|---|
-| [PowerShell Gallery](#powershell-gallery) | `Install-Module ProjectJump -Scope CurrentUser` | `Update-Module ProjectJump` | No |
 | [One-line script](#one-line-script) | `irm https://raw.githubusercontent.com/tamujin/pwsh-project-jump/main/install.ps1 \| iex` | running it again | Yes |
 | [Scoop](#scoop) | `scoop install projectjump` (after adding the bucket) | `scoop update projectjump` | No |
 | [Release zip](#release-zip) | download and extract | by hand | No |
@@ -51,14 +49,6 @@ Add-Content $PROFILE 'Import-Module ProjectJump'
 Open a new terminal tab, run `pja` in a project folder (or `Add-ProjectRoot D:\source\repos`), and press **Ctrl+K**.
 
 PowerShell 7 and Windows PowerShell 5.1 keep separate module folders and profiles. If you use both, install from each, except with Scoop, which serves both.
-
-### PowerShell Gallery
-
-```powershell
-Install-Module ProjectJump -Scope CurrentUser
-```
-
-With PSResourceGet (PowerShell 7.4+), use `Install-PSResource ProjectJump` instead.
 
 ### One-line script
 
@@ -104,7 +94,7 @@ cd pwsh-project-jump
 
 ### Uninstall
 
-Remove the `Import-Module ProjectJump` line from your profile, then use the counterpart of how you installed it: `Uninstall-Module ProjectJump` or `Uninstall-PSResource ProjectJump`, `scoop uninstall projectjump`, or delete the `ProjectJump` folder from your module folder. Your saved folders stay in `~/.projectjump` until you delete it.
+Remove the `Import-Module ProjectJump` line from your profile, then use the counterpart of how you installed it: `scoop uninstall projectjump`, or delete the `ProjectJump` folder from your module folder. Your saved folders stay in `~/.projectjump` until you delete it.
 
 ## Usage
 

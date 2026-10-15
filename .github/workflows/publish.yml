@@ -1,8 +1,9 @@
-name: Publish to PowerShell Gallery
+name: Release
 
 # Runs when a version tag (v*) is pushed, or manually from the Actions tab.
-# Publishes the module to the PowerShell Gallery, then creates the GitHub release for the version
-# (or updates its assets) with ProjectJump.zip, which install.ps1 and the Scoop manifest download.
+# Creates the GitHub release for the version (or updates its assets) with ProjectJump.zip, which
+# install.ps1 and the Scoop manifest download. If the PSGALLERY_API_KEY secret is set, it also
+# publishes the module to the PowerShell Gallery; without it, that step is skipped with a warning.
 # Re-running is safe: a version already on the Gallery is skipped.
 # The 'powershell-gallery' environment can require your approval before the job starts:
 # GitHub > Settings > Environments > powershell-gallery > Required reviewers.
@@ -55,7 +56,9 @@ jobs:
             return
           }
           if (-not $env:NUGET_API_KEY) {
-            throw 'The PSGALLERY_API_KEY secret is missing. Add it under Settings > Secrets and variables > Actions.'
+            # The GitHub release still gets built, so the other install methods keep working.
+            Write-Host '::warning::PSGALLERY_API_KEY is not set, so the PowerShell Gallery step was skipped. Add it under Settings > Secrets and variables > Actions, then re-run this workflow.'
+            return
           }
           Publish-Module -Path ./src/ProjectJump -NuGetApiKey $env:NUGET_API_KEY -Verbose
 

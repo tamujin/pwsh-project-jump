@@ -43,7 +43,7 @@ Guidelines:
 1. Bump `ModuleVersion` in `src/ProjectJump/ProjectJump.psd1` and move the `[Unreleased]` notes in `CHANGELOG.md` under the new version.
 2. Merge to `main` once CI is green.
 3. Tag and push: `git tag -a vX.Y.Z -m "vX.Y.Z"; git push origin vX.Y.Z`.
-4. The *Publish to PowerShell Gallery* workflow checks that the tag matches the manifest, runs the tests, publishes to the Gallery, and creates the GitHub release with `ProjectJump.zip` (built by `tools/New-ReleasePackage.ps1`) and its `.sha256`. It needs the `PSGALLERY_API_KEY` secret, and can wait for approval in the `powershell-gallery` environment.
+4. The *Release* workflow checks that the tag matches the manifest, runs the tests, and creates the GitHub release with `ProjectJump.zip` (built by `tools/New-ReleasePackage.ps1`) and its `.sha256`. If the `PSGALLERY_API_KEY` secret is set, it also publishes to the PowerShell Gallery; without it, that step is skipped with a warning. It can wait for approval in the `powershell-gallery` environment.
 5. Once the release is up, update the Scoop manifest and commit it to `main`:
    ```powershell
    & "$(scoop prefix scoop)\bin\checkver.ps1" -App projectjump -Dir ./bucket -Update

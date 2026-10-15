@@ -11,6 +11,10 @@ trim_trailing_whitespace = true
 charset = utf-8-bom
 end_of_line = crlf
 
+# Run as `irm ... | iex`, where a BOM breaks parsing. Keep it ASCII so 5.1 doesn't need one.
+[install.ps1]
+charset = utf-8
+
 [*.{yml,yaml,json,md}]
 indent_size = 2
 end_of_line = lf

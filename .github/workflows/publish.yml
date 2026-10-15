@@ -1,6 +1,9 @@
 name: Publish to PowerShell Gallery
 
 # Runs when a version tag (v*) is pushed, or manually from the Actions tab.
+# Publishes the module to the PowerShell Gallery, then creates the GitHub release for the version
+# (or updates its assets) with ProjectJump.zip, which install.ps1 and the Scoop manifest download.
+# Re-running is safe: a version already on the Gallery is skipped.
 # The 'powershell-gallery' environment can require your approval before the job starts:
 # GitHub > Settings > Environments > powershell-gallery > Required reviewers.
 
@@ -10,16 +13,17 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write   # create the GitHub release and upload its assets
 
 jobs:
   publish:
     runs-on: windows-latest
     environment: powershell-gallery
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Check the version
+        id: version
         shell: pwsh
         run: |
           $version = (Import-PowerShellDataFile ./src/ProjectJump/ProjectJump.psd1).ModuleVersion
@@ -30,17 +34,52 @@ jobs:
           if (-not (Select-String -Path ./CHANGELOG.md -Pattern "^## \[$([regex]::Escape($version))\]" -Quiet)) {
             throw "CHANGELOG.md has no entry for $version."
           }
+          "version=$version" >> $env:GITHUB_OUTPUT
 
       - name: Run the tests
         shell: pwsh
         run: ./tests/Invoke-Tests.ps1
 
-      - name: Publish
+      - name: Build ProjectJump.zip
+        shell: pwsh
+        run: ./tools/New-ReleasePackage.ps1 -OutputPath out
+
+      - name: Publish to the PowerShell Gallery
         shell: pwsh
         env:
           NUGET_API_KEY: ${{ secrets.PSGALLERY_API_KEY }}
+          VERSION: ${{ steps.version.outputs.version }}
         run: |
+          if (Find-Module ProjectJump -RequiredVersion $env:VERSION -Repository PSGallery -ErrorAction SilentlyContinue) {
+            Write-Host "ProjectJump $env:VERSION is already on the PowerShell Gallery, skipping."
+            return
+          }
           if (-not $env:NUGET_API_KEY) {
             throw 'The PSGALLERY_API_KEY secret is missing. Add it under Settings > Secrets and variables > Actions.'
           }
           Publish-Module -Path ./src/ProjectJump -NuGetApiKey $env:NUGET_API_KEY -Verbose
+
+      - name: Create or update the GitHub release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          $tag = "v$env:VERSION"
+          $assets = 'out/ProjectJump.zip', 'out/ProjectJump.zip.sha256'
+          gh release view $tag *> $null
+          if ($LASTEXITCODE -eq 0) {
+            gh release upload $tag @assets --clobber
+          }
+          else {
+            # Release notes are this version's section of CHANGELOG.md.
+            $lines = Get-Content ./CHANGELOG.md
+            $start = (Select-String -Path ./CHANGELOG.md -Pattern "^## \[$([regex]::Escape($env:VERSION))\]").LineNumber
+            $notes = $lines | Select-Object -Skip $start | ForEach-Object -Begin { $stop = $false } -Process {
+              if ($_ -match '^## \[' -or $_ -match '^\[[^\]]+\]: ') { $stop = $true }
+              if (-not $stop) { $_ }
+            }
+            ($notes -join "`n").Trim() | Set-Content out/notes.md
+            gh release create $tag @assets --title $tag --notes-file out/notes.md --target $env:GITHUB_SHA
+          }
+          if ($LASTEXITCODE) { throw "gh failed with exit code $LASTEXITCODE" }

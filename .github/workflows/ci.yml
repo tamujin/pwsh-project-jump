@@ -19,7 +19,7 @@ jobs:
         shell: pwsh
         run: |
           Install-Module PSScriptAnalyzer -Scope CurrentUser -Force
-          $results = './src', './install.ps1' | ForEach-Object { Invoke-ScriptAnalyzer -Path $_ -Recurse -Settings ./PSScriptAnalyzerSettings.psd1 }
+          $results = './src', './install.ps1', './tools' | ForEach-Object { Invoke-ScriptAnalyzer -Path $_ -Recurse -Settings ./PSScriptAnalyzerSettings.psd1 }
           $results | Format-Table -AutoSize
           if ($results) { throw "$($results.Count) PSScriptAnalyzer finding(s)" }
 

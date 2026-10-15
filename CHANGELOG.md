@@ -5,6 +5,10 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ## [Unreleased]
 
+### Added
+- More ways to install: the PowerShell Gallery (`Install-Module ProjectJump`), a one-line installer (`irm .../install.ps1 | iex`), a Scoop bucket in this repository, and `ProjectJump.zip` attached to each GitHub release with a SHA-256 checksum.
+- `install.ps1` downloads the latest release (or `-Version`) when it isn't run from a clone, and leaves no variables behind when piped into `Invoke-Expression`.
+
 ## [0.3.0] - 2026-10-14
 
 ### Added
